@@ -4,6 +4,10 @@ current video streaming provider use dynamic adaptive streaming to deliver video
 
 if you ever wanted to create an own DASH video server, you can use the provided script to create DASH compatible manifest files.
 
-to playout the videos you either use the DASH.JS player or SHAKA-Player or something else.
+to playout the videos you either use the DASH.JS player or SHAKA-Player or something else (see dash.html, change `src="...."` to your corresponding manifest file).
 
+## usage
+
+simply run `dash_encoder.py --help` to get some initital help.
+usually you just need to run `./dash_encoder.py <videofile>` to create the corresponding DASH parts.
 
