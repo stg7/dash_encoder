@@ -5,17 +5,30 @@
 <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 <style>
     video {
-       width: 1280px;
-       height: 720px;
+       width: 100%;
        outline: none;
     }
 </style>
+<script type="text/javascript">
+    function update_info() {
+        var info = document.getElementById("info");
+        var video = document.getElementById("video");
+        info.textContent = video.videoWidth + "x" + video.videoHeight
+        setTimeout(update_info, 2000);
+    }
 
+    (function() {
+        setTimeout(update_info, 2000);
+    })();
+
+</script>
 </head>
 <body>
    <div>
-       <video data-dashjs-player autoplay muted src="https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd" controls>
+       <video id="video" data-dashjs-player autoplay muted src="https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd" controls>
        </video>
+   </div>
+   <div id="info">
    </div>
 </body>
 </html>
