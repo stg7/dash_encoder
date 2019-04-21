@@ -109,7 +109,7 @@ def main(_):
     cmd, outfile = build_manifest_command(a["video"], video_files, [audio_file], a["dash_folder"])
     #print(cmd)
     os.system(cmd)
-    print("done :-)")
+    print(f"done :-) use {outfile} in your player")
 
 
 if __name__ == "__main__":
