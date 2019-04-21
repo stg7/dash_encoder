@@ -9,6 +9,7 @@ based on:
     * https://ffmpeg.org/ffmpeg-formats.html#dash-2
     * https://www.jungledisk.com/blog/2017/07/03/live-streaming-mpeg-dash-with-raspberry-pi-3/
     * https://rybakov.com/blog/mpeg-dash/
+    * nice post about encoding: https://developers.google.com/media/vp9/settings/vod/
 """
 
 
