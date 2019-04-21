@@ -33,5 +33,5 @@ thanks to open source software, there are several parts already available, DASH 
 the search engine part could be realized using [apache solr](https://lucene.apache.org/solr/) and for recommendation [predictionio](http://predictionio.apache.org/index.html) could be used.
 open source social networks are also available, or not needed :)
 
-more or less a advanced encoding pipeline and processing/storage power is also required.
+more or less an advanced encoding pipeline and processing/storage power is also required.
 
