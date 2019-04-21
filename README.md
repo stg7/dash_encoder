@@ -10,7 +10,7 @@ to playout the videos you either use the DASH.JS player or SHAKA-Player or somet
 ## usage
 
 simply run `./dash_encoder.py --help` to get some initital help.
-usually you just need to run `./dash_encoder.py <videofile>` to create the corresponding DASH parts.
+usually you just need to run `./dash_encoder.py <videofile>` to create the corresponding DASH files (segments and manifest).
 
 
 ## hints/notes
