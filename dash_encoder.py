@@ -86,6 +86,7 @@ def main(_):
 
     resolutions = [240, 720, 1080]  # TODO: extend, check, update
 
+    # collect all commands and output files
     commands = []
     video_files = []
     for resolution in resolutions:
@@ -93,6 +94,7 @@ def main(_):
         commands.append(cmd)
         video_files.append(outfile)
 
+    # for audio only one quality is considered
     cmd, audio_file = build_audio_encode_command(a["video"], a["dash_folder"])
     commands.append(cmd)
 
@@ -100,7 +102,7 @@ def main(_):
     # print("\n".join(video_files))
     # print(audio_file)
     for x in commands:
-        print(f"create {x}")
+        print(f"run {x}")
         os.system(x)
 
     # print("create manifest file")
