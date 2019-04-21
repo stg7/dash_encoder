@@ -84,7 +84,7 @@ def main(_):
 
     os.makedirs(a["dash_folder"], exist_ok=True)
 
-    resolutions = [240, 720, 1080]  # extend, check, update
+    resolutions = [240, 720, 1080]  # TODO: extend, check, update
 
     commands = []
     video_files = []
