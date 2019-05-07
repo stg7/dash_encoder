@@ -70,6 +70,7 @@ def build_manifest_command(video, video_files, audio_files, dashdir):
     cmd = " ".join(cmd.split())
     return cmd, output
 
+
 def build_thumbnail(video, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_thumb.png")
     cmd = f"""
@@ -80,8 +81,8 @@ def build_thumbnail(video, dashdir):
          {output}
         """
     cmd = " ".join(cmd.split())
-
     return cmd, output
+
 
 def main(_):
     # argument parsing
@@ -137,7 +138,6 @@ def main(_):
     os.system(cmd)
 
     print(f"done :-) use {outfile} in your player")
-
 
 
 if __name__ == "__main__":

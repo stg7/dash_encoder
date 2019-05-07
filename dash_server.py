@@ -64,7 +64,6 @@ def main(_):
         idx_fp.write("var video_index =\n")
         idx_fp.write(json.dumps(videos, indent=4) + ";\n")
 
-
     bottle.run(
         app=app,
         host='0.0.0.0',
@@ -72,7 +71,6 @@ def main(_):
         debug=True,
         reloader=True
     )
-
 
 
 if __name__ == "__main__":
