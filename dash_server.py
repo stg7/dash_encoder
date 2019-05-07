@@ -4,6 +4,32 @@ import sys
 import os
 import glob
 import json
+import bottle
+
+
+app = application = bottle.Bottle()
+
+
+@app.error(404)
+def error404(error):
+    return 'he is dead jim'
+
+
+@app.route('/<filename:path>')
+def static(filename):
+    '''
+    Serve static files
+    '''
+    return bottle.static_file(filename, root='.')
+
+
+@app.route('/')
+def main():
+    '''
+    The front "index" page
+    '''
+    return bottle.template("index.html")
+
 
 def main(_):
     # argument parsing
@@ -12,6 +38,8 @@ def main(_):
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--dash_folder", type=str, default="dash", help="folder for storing the dash video")
     parser.add_argument("--index_file", type=str, default="video_index.js", help="file where all videos are stored as javascript json object")
+    parser.add_argument("--webserver_port", type=int, default=8081, help="webserver port")
+
 
     a = vars(parser.parse_args())
     print(f"used cli parmeters: {a}")
@@ -35,6 +63,16 @@ def main(_):
     with open(a["index_file"], "w") as idx_fp:
         idx_fp.write("var video_index =\n")
         idx_fp.write(json.dumps(videos, indent=4) + ";\n")
+
+
+    bottle.run(
+        app=app,
+        host='0.0.0.0',
+        port=a["port"],
+        debug=True,
+        reloader=True
+    )
+
 
 
 if __name__ == "__main__":
