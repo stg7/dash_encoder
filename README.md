@@ -7,6 +7,17 @@ if you ever wanted to create an own DASH video server, you can use the provided 
 
 to playout the videos you either use the DASH.JS player or SHAKA-Player or something else (see dash.html, change `src="...."` to your corresponding manifest file).
 
+## requirements
+
+* python3
+* ffmpeg (e.g. >= 4.0)
+
+for ubuntu 18.04 just run:
+```
+sudo apt install python3 ffmpeg
+```
+
+
 ## usage
 
 simply run `./dash_encoder.py --help` to get some initital help.
