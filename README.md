@@ -10,14 +10,35 @@ to playout the videos you either use the DASH.JS player or SHAKA-Player or somet
 ## usage
 
 simply run `./dash_encoder.py --help` to get some initital help.
+```
+usage: dash_encoder.py [-h] [--dash_folder DASH_FOLDER] [--auto_subfolders]
+                       video
+
+create dash representations
+
+positional arguments:
+  video                 video to convert to a dash version
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --dash_folder DASH_FOLDER
+                        folder for storing the dash video (default: dash)
+  --auto_subfolders, -as
+                        create subfolder based on videoname (default: False)
+
+stg7 2019
+```
 usually you just need to run `./dash_encoder.py <videofile>` to create the corresponding DASH files (segments and manifest).
+if you plan to create several dash videos just run the command with `-as` flag, so that for each video a subfolder will be created.
 
 
 ## hints/notes
 the provided script  is just a staring point, there are several parameters that should be tuned and changed.
 
 # example service
-to run an example service, you can use `./dash_server.py` it will start a web server with `index.html` as default entry, all videos in the configured `dash_folder` if created with subfolderes are shown.
+to run an example service, you can use `./dash_server.py` it will start a web server with `index.html` as default entry, all videos in the configured `dash_folder` are shown (consider to create subfolders for each video in the encoding step, using e.g. `--auto_subfolders` or `-as` flag.
+
+`dash_server.py` will update the `video_index.js` file with new videos during each start, moreover you can just copy `[video_index.js, dash, index.html]` to any static http file server and play the videos.
 
 
 # How to build something like Youtube, Netflix and so on
