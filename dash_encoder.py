@@ -70,6 +70,17 @@ def build_manifest_command(video, video_files, audio_files, dashdir):
     cmd = " ".join(cmd.split())
     return cmd, output
 
+def build_thumbnail(video, dashdir):
+    output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_thumb.png")
+    cmd = f"""
+        ffmpeg -y -hide_banner
+        -i {video}
+        -ss 00:00:05
+         {output}
+        """
+    cmd = " ".join(cmd.split())
+
+    return cmd, output
 
 def main(_):
     # argument parsing
@@ -86,7 +97,7 @@ def main(_):
 
     if a["auto_subfolders"]:
         subfolder = os.path.splitext(os.path.basename(a["video"]))[0]
-        a["dash_folder"] = os.path.join(a["dash_folder"], subfolder) 
+        a["dash_folder"] = os.path.join(a["dash_folder"], subfolder)
     os.makedirs(a["dash_folder"], exist_ok=True)
 
     print(f"store dashed video in {a['dash_folder']}")
@@ -112,11 +123,18 @@ def main(_):
         print(f"run {x}")
         os.system(x)
 
+    print("create thumbnail")
+    cmd, outfile = build_thumbnail(a["video"], a["dash_folder"])
+    os.system(cmd)
+    print(f"thumbnail created {outfile}")
+
     # print("create manifest file")
     cmd, outfile = build_manifest_command(a["video"], video_files, [audio_file], a["dash_folder"])
     #print(cmd)
     os.system(cmd)
+
     print(f"done :-) use {outfile} in your player")
+
 
 
 if __name__ == "__main__":
