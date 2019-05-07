@@ -103,6 +103,7 @@ def main(_):
 
     print(f"store dashed video in {a['dash_folder']}")
 
+    # TODO: filter out higher resolutions based on input video?!
     resolutions = [240, 360, 540, 720, 1080, 1440, 2160]  # TODO: extend, check, update
 
     # collect all commands and output files
