@@ -76,6 +76,7 @@ def build_thumbnail(video, dashdir):
         ffmpeg -y -hide_banner
         -i {video}
         -ss 00:00:05
+        -vframes 1
          {output}
         """
     cmd = " ".join(cmd.split())
