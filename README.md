@@ -14,7 +14,10 @@ usually you just need to run `./dash_encoder.py <videofile>` to create the corre
 
 
 ## hints/notes
-the provided script is just a staring point, there are several parameters that should be tuned and changed.
+the provided script  is just a staring point, there are several parameters that should be tuned and changed.
+
+# example service
+to run an example service, you can use `./dash_server.py` it will start a web server with `index.html` as default entry, all videos in the configured `dash_folder` if created with subfolderes are shown.
 
 
 # How to build something like Youtube, Netflix and so on

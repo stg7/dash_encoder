@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>dash video</title>
+
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <script src="video_index.js"></script>
+  <style type="text/css">
+      video {
+         width: 100%;
+         outline: none;
+      }
+      .thumb {
+        width: 200px;
+      }
+      .overview {
+         width: 100%;
+      }
+      .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+      }
+      /* Sticky footer styles
+      -------------------------------------------------- */
+      html {
+        position: relative;
+        min-height: 100%;
+      }
+      body {
+        /* Margin bottom by footer height */
+        margin-bottom: 60px;
+      }
+      .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        /* Set the fixed height of the footer here */
+        height: 60px;
+        line-height: 60px; /* Vertically center the text there */
+        background-color: #f5f5f5;
+      }
+
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      body > .container {
+        padding: 60px 15px 0;
+      }
+
+      .footer > .container {
+        padding-right: 15px;
+        padding-left: 15px;
+      }
+
+      code {
+        font-size: 80%;
+      }
+
+  </style>
+
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">dash video index</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#"  data-toggle="modal" data-target="#myModal">about</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">About - dash index</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            &copy; stg7 2019 - <a href="https://stg7.github.io">Steve Göring</a>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <main role="main" class="container">
+      <div id="overview">
+      </div>
+
+      <hr>
+      <div>
+        <video id="videoplayer" controls style="display:none"></video>
+      </div>
+      <hr>
+      played resolution
+      <div id="info">
+      </div>
+
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <span class="text-muted">&copy; stg7 2019</span>
+      </div>
+    </footer>
+
+<script type="text/javascript">
+    function update_info() {
+        var info = document.getElementById("info");
+        var video = document.getElementById("videoplayer");
+        info.textContent = video.videoWidth + "x" + video.videoHeight
+        setTimeout(update_info, 2000);
+    }
+
+    function htmlToElement(html) {
+        var template = document.createElement('template');
+        html = html.trim(); // Never return a text node of whitespace as the result
+        template.innerHTML = html;
+        return template.content.firstChild;
+    }
+
+    function play_video(url) {
+        console.log("play: " + url);
+        document.querySelector("#videoplayer").style.display = "inline";
+
+        var player = dashjs.MediaPlayer().create();
+        player.initialize(document.querySelector("#videoplayer"), url, true);
+
+        setTimeout(update_info, 2000);
+    }
+
+    (function() {
+        // document is ready
+
+        console.log(document.getElementById("overview"));
+
+        video_index.forEach(function(video) {
+            console.log(video);
+
+            document.getElementById("overview").appendChild(
+              htmlToElement(
+                "<div>"+ video["name"] +" <br/> <a href='#' onclick=play_video(\'" + video["manifest"] + "\')><img class='thumb' src='" + video["thumbail"] + "' </img></a>  </div>"
+              )
+            );
+        });
+
+    })();
+
+</script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>
