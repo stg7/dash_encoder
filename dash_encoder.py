@@ -78,14 +78,20 @@ def main(_):
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("video", type=str, help="video to convert to a dash version")
     parser.add_argument("--dash_folder", type=str, default="dash", help="folder for storing the dash video")
+    parser.add_argument("--auto_subfolders", "-as", action="store_true", help="create subfolder based on videoname")
 
     a = vars(parser.parse_args())
 
     print(f"used cli parmeters: {a}")
 
+    if a["auto_subfolders"]:
+        subfolder = os.path.splitext(os.path.basename(a["video"]))[0]
+        a["dash_folder"] = os.path.join(a["dash_folder"], subfolder) 
     os.makedirs(a["dash_folder"], exist_ok=True)
 
-    resolutions = [240, 720, 1080]  # TODO: extend, check, update
+    print(f"store dashed video in {a['dash_folder']}")
+
+    resolutions = [240, 360, 540, 720, 1080, 1440, 2160]  # TODO: extend, check, update
 
     # collect all commands and output files
     commands = []
