@@ -115,6 +115,7 @@ def main(_):
         video_files.append(outfile)
 
     # for audio only one quality is considered
+    # TODO: maybe use more?
     cmd, audio_file = build_audio_encode_command(a["video"], a["dash_folder"])
     commands.append(cmd)
 
