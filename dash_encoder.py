@@ -91,6 +91,7 @@ def main(_):
     parser.add_argument("video", type=str, help="video to convert to a dash version")
     parser.add_argument("--dash_folder", type=str, default="dash", help="folder for storing the dash video")
     parser.add_argument("--auto_subfolders", "-as", action="store_true", help="create subfolder based on videoname")
+    parser.add_argument("--no_encoding", "-ne", action="store_true", help="don't encode the videos again")
 
     a = vars(parser.parse_args())
 
@@ -120,9 +121,10 @@ def main(_):
     # print("\n".join(commands))
     # print("\n".join(video_files))
     # print(audio_file)
-    for x in commands:
-        print(f"run {x}")
-        os.system(x)
+    if not a["no_encoding"]:
+        for x in commands:
+            print(f"run {x}")
+            os.system(x)
 
     print("create thumbnail")
     cmd, outfile = build_thumbnail(a["video"], a["dash_folder"])
