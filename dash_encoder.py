@@ -70,6 +70,7 @@ def build_manifest_command(video, video_files, audio_files, dashdir):
     cmd = " ".join(cmd.split())
     return cmd, output
 
+
 def build_thumbnail(video, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_thumb.png")
     cmd = f"""
@@ -80,8 +81,8 @@ def build_thumbnail(video, dashdir):
          {output}
         """
     cmd = " ".join(cmd.split())
-
     return cmd, output
+
 
 def main(_):
     # argument parsing
@@ -104,6 +105,7 @@ def main(_):
 
     print(f"store dashed video in {a['dash_folder']}")
 
+    # TODO: filter out higher resolutions based on input video?!
     resolutions = [240, 360, 540, 720, 1080, 1440, 2160]  # TODO: extend, check, update
 
     # collect all commands and output files
@@ -115,6 +117,7 @@ def main(_):
         video_files.append(outfile)
 
     # for audio only one quality is considered
+    # TODO: maybe use more?
     cmd, audio_file = build_audio_encode_command(a["video"], a["dash_folder"])
     commands.append(cmd)
 
@@ -137,7 +140,6 @@ def main(_):
     os.system(cmd)
 
     print(f"done :-) use {outfile} in your player")
-
 
 
 if __name__ == "__main__":
