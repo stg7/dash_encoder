@@ -104,17 +104,17 @@
     </div>
 
     <main role="main" class="container">
-      <div id="overview">
+      <div id="player_area" style="display:none" class="row">
+        <video id="videoplayer" controls ></video>
+        <hr>
+        played resolution
+        <div id="info" class="col-md-12">
+        </div>
+      </div>
+      <div id="overview" class="row">
       </div>
 
       <hr>
-      <div>
-        <video id="videoplayer" controls style="display:none"></video>
-      </div>
-      <hr>
-      played resolution
-      <div id="info">
-      </div>
 
     </main>
 
@@ -141,7 +141,7 @@
 
     function play_video(url) {
         console.log("play: " + url);
-        document.querySelector("#videoplayer").style.display = "inline";
+        document.querySelector("#player_area").style.display = "inline";
 
         var player = dashjs.MediaPlayer().create();
         player.initialize(document.querySelector("#videoplayer"), url, true);
@@ -159,7 +159,7 @@
 
             document.getElementById("overview").appendChild(
               htmlToElement(
-                "<div>"+ video["name"] +" <br/> <a href='#' onclick=play_video(\'" + video["manifest"] + "\')><img class='thumb' src='" + video["thumbail"] + "' </img></a>  </div>"
+                "<div class='col-md-2' style='margin-left:1em'>"+ video["name"] +" <a href='#' onclick=play_video(\'" + video["manifest"] + "\')><img class='thumb' src='" + video["thumbail"] + "' </img></a>  </div>"
               )
             );
         });
