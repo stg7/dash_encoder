@@ -131,12 +131,16 @@ def main(_):
 
     print("create thumbnail")
     cmd, outfile = build_thumbnail(a["video"], a["dash_folder"])
-    os.system(cmd)
-    print(f"thumbnail created {outfile}")
+    if not os.path.isfile(outfile):
+        os.system(cmd)
+        print(f"thumbnail created {outfile}")
+    else:
+        print(f"thumbnail reused")
 
     # print("create manifest file")
     cmd, outfile = build_manifest_command(a["video"], video_files, [audio_file], a["dash_folder"])
-    #print(cmd)
+    # print(cmd)
+    #return
     os.system(cmd)
 
     print(f"done :-) use {outfile} in your player")
