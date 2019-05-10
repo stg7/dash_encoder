@@ -13,9 +13,16 @@
          width: 100%;
          outline: none;
       }
-      .thumb {
+      .thumb_container {
+        overflow: hidden;
         width: 200px;
+        height: 100px;
       }
+      .thumb_container img {
+        width: 200px;
+        height: 120px;
+      }
+
       .overview {
          width: 100%;
       }
@@ -159,7 +166,7 @@
 
             document.getElementById("overview").appendChild(
               htmlToElement(
-                "<div class='col-md-2' style='margin-left:1em'>"+ video["name"] +" <a href='#' onclick=play_video(\'" + video["manifest"] + "\')><img class='thumb' src='" + video["thumbail"] + "' </img></a>  </div>"
+                "<div class='col-md-2' style='margin-left:1em'>"+ video["name"] +" <a href='#' onclick=play_video(\'" + video["manifest"] + "\')><div class='thumb_container'><img src='" + video["thumbail"] + "'</img></div></a></div>"
               )
             );
         });
