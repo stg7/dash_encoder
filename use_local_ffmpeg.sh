@@ -1,10 +1,11 @@
 #!/bin/bash
 
 wget "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz" -c
-atool -x ffmpeg-release-amd64-static.tar.xz
+tar -xJf ffmpeg-release-amd64-static.tar.xz
 
-ffmpeg_path="./$(dirname $(find ffmpeg-* -name "ffmpeg"))"
+ffmpeg_path="$(pwd)/$(dirname $(find ffmpeg-* -name "ffmpeg"))"
+echo "use $ffmpeg_path"
 
-PATH=$ffmpeg_path:$PATH
+PATH="$ffmpeg_path:$PATH"
 export PATH
-
+exec /bin/bash
