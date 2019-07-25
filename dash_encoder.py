@@ -149,7 +149,7 @@ def main(_):
     video_files = []
     for resolution in resolutions:
         cmd, outfile = build_video_encode_command(a["video"], a["dash_folder"], resolution, seg_duration=seg_duration)
-        #commands.append(cmd)
+        commands.append(cmd)
         video_files.append(outfile)
 
     # for audio only one quality is considered
