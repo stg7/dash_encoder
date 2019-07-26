@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import argparse
 import sys
+import math
 import os
+import subprocess
 
 """
 based on:
@@ -13,7 +15,27 @@ based on:
 """
 
 
-def build_video_encode_command(video, dashdir, height=240):
+def shell_call(call):
+    """
+    Run a program via system call and return stdout + stderr.
+    @param call programm and command line parameter list, e.g shell_call("ls /")
+    @return stdout and stderr of programm call
+    """
+    try:
+        output = subprocess.check_output(call, universal_newlines=True, shell=True)
+    except Exception as e:
+        output = str(e.output)
+    return output
+
+
+def get_fps(video):
+    cmd = f"""./ffmpeg-4.1.4-amd64-static/ffprobe -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate {video}"""
+    fps = shell_call(cmd).split("/")
+    fps = int(math.ceil(int(fps[0].strip()) / int(fps[1].strip())))
+    return fps
+
+
+def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
     # TODO: currently only CRF encoding possible
     # notes for other codecs
     #    -an -c:v libaom-av1 -row-mt 1
@@ -27,14 +49,15 @@ def build_video_encode_command(video, dashdir, height=240):
     # -x264opts 'keyint=25:min-keyint=25:no-scenecut'
 
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_{height}p.mp4")
+    fps = get_fps(video)
     cmd = f"""
-        ffmpeg -y -hide_banner
+        ./ffmpeg-4.1.4-amd64-static/ffmpeg -y -hide_banner
         -i "{video}"
         -preset slow
         -an -c:v libx264
         -crf 24
-        -x264opts 'keyint=25:min-keyint=25:no-scenecut'
-        -g 1
+        -x264opts 'keyint={seg_duration*fps}:min-keyint={seg_duration*fps}:no-scenecut'
+        -g {seg_duration}
         -pix_fmt yuv420p
         -vf "scale=-2:{height}"
         -f mp4
@@ -46,9 +69,10 @@ def build_video_encode_command(video, dashdir, height=240):
 def build_audio_encode_command(video, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_audio.m4a")
     cmd = f"""
-        ffmpeg -y -hide_banner
+        ./ffmpeg-4.1.4-amd64-static/ffmpeg -y -hide_banner
         -i {video}
         -c:a aac
+        -ac 2
         -b:a 192k
         -vn
          {output}
@@ -57,7 +81,7 @@ def build_audio_encode_command(video, dashdir):
     return cmd, output
 
 
-def build_manifest_command(video, video_files, audio_files, dashdir):
+def build_manifest_command(video, video_files, audio_files, dashdir, seg_duration=2):
     manifest_part = " ".join(
         [f"-i {i}" for i in video_files + audio_files]
     )
@@ -69,13 +93,13 @@ def build_manifest_command(video, video_files, audio_files, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_manifest.mpd")
 
     cmd = f"""
-        ffmpeg -y
+        ./ffmpeg-4.1.4-amd64-static/ffmpeg -y
         {manifest_part}
         -c copy
         {map_part}
         -f dash
         -use_template 1 -use_timeline 0
-        -seg_duration 2
+        -seg_duration {seg_duration}
         -adaptation_sets "id=0,streams=v id=1,streams=a"
         {output}
         """
@@ -86,7 +110,7 @@ def build_manifest_command(video, video_files, audio_files, dashdir):
 def build_thumbnail(video, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_thumb.png")
     cmd = f"""
-        ffmpeg -y -hide_banner
+        ./ffmpeg-4.1.4-amd64-static/ffmpeg -y -hide_banner
         -i {video}
         -ss 00:00:02
         -vf "scale=-2:540"
@@ -121,11 +145,12 @@ def main(_):
     # TODO: filter out higher resolutions based on input video?!
     resolutions = [240, 360] #, 540, 720, 1080] #, 1440, 2160]  # TODO: extend, check, update
 
+    seg_duration = 2
     # collect all commands and output files
     commands = []
     video_files = []
     for resolution in resolutions:
-        cmd, outfile = build_video_encode_command(a["video"], a["dash_folder"], resolution)
+        cmd, outfile = build_video_encode_command(a["video"], a["dash_folder"], resolution, seg_duration=seg_duration)
         commands.append(cmd)
         video_files.append(outfile)
 
@@ -152,7 +177,7 @@ def main(_):
         print(cmd)
 
     # print("create manifest file")
-    cmd, outfile = build_manifest_command(a["video"], video_files, [audio_file], a["dash_folder"])
+    cmd, outfile = build_manifest_command(a["video"], video_files, [audio_file], a["dash_folder"], seg_duration=seg_duration)
     # print(cmd)
     #return
     os.system(cmd)
