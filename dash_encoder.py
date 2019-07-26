@@ -24,6 +24,7 @@ def build_video_encode_command(video, dashdir, height=240):
     #    -crf 28
     #-x265-params "keyint=25:min-keyint=25"
     #-tune film -x264opts 'keyint=25:min-keyint=25:no-scenecut'
+    # -x264opts 'keyint=25:min-keyint=25:no-scenecut'
 
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_{height}p.mp4")
     cmd = f"""
@@ -87,7 +88,7 @@ def build_thumbnail(video, dashdir):
     cmd = f"""
         ffmpeg -y -hide_banner
         -i {video}
-        -ss 00:00:05
+        -ss 00:00:02
         -vf "scale=-2:540"
         -vframes 1
          {output}
@@ -118,7 +119,7 @@ def main(_):
     print(f"store dashed video in {a['dash_folder']}")
 
     # TODO: filter out higher resolutions based on input video?!
-    resolutions = [240, 360, 540, 720, 1080] #, 1440, 2160]  # TODO: extend, check, update
+    resolutions = [240, 360] #, 540, 720, 1080] #, 1440, 2160]  # TODO: extend, check, update
 
     # collect all commands and output files
     commands = []
