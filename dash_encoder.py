@@ -30,7 +30,7 @@ def shell_call(call):
 
 def get_fps(video):
     cmd = f"""./ffmpeg-4.1.4-amd64-static/ffprobe -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate {video}"""
-    fps = shell_call(cmd).split("/")
+    fps = shell_call(cmd).split("\n")[0].split("/")
     fps = int(math.ceil(int(fps[0].strip()) / int(fps[1].strip())))
     return fps
 
@@ -143,7 +143,7 @@ def main(_):
     print(f"store dashed video in {a['dash_folder']}")
 
     # TODO: filter out higher resolutions based on input video?!
-    resolutions = [240, 360] #, 540, 720, 1080] #, 1440, 2160]  # TODO: extend, check, update
+    resolutions = [360, 576, 720] #, 540, 720, 1080] #, 1440, 2160]  # TODO: extend, check, update
 
     seg_duration = 2
     # collect all commands and output files
