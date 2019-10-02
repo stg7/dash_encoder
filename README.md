@@ -71,3 +71,5 @@ open source social networks are also available, or not needed :)
 
 more or less an advanced encoding pipeline and processing/storage power is also required.
 
+## Licence
+GNU General Public License v3. See LICENSE file in this repository.

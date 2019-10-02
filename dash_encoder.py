@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+"""
+    This file is part of dash_encoder.
+    dash_encoder is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    dash_encoder is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with dash_encoder. If not, see <http://www.gnu.org/licenses/>.
+
+    Author: Steve Göring
+"""
 import argparse
 import sys
 import math
@@ -47,15 +62,25 @@ def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
     #-x265-params "keyint=25:min-keyint=25"
     #-tune film -x264opts 'keyint=25:min-keyint=25:no-scenecut'
     # -x264opts 'keyint=25:min-keyint=25:no-scenecut'
-
+    encoding = {
+        360: {"crf": 32, "preset": "ultrafast"},
+        576: {"crf": 28, "preset": "ultrafast"},
+        720: {"crf": 24, "preset": "fast"}
+    }
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_{height}p.mp4")
     fps = get_fps(video)
+    crf = 24
+    preset = "slow"
+    if height in encoding:
+        crf = encoding[height]["crf"]
+        preset = encoding[height]["preset"]
+
     cmd = f"""
         ./ffmpeg-4.1.4-amd64-static/ffmpeg -y -hide_banner
         -i "{video}"
-        -preset slow
+        -preset {preset}
         -an -c:v libx264
-        -crf 24
+        -crf {crf}
         -x264opts 'keyint={seg_duration*fps}:min-keyint={seg_duration*fps}:no-scenecut'
         -g {seg_duration}
         -pix_fmt yuv420p
