@@ -83,9 +83,9 @@ def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
     #-tune film -x264opts 'keyint=25:min-keyint=25:no-scenecut'
     # -x264opts 'keyint=25:min-keyint=25:no-scenecut'
     encoding = {
-        240: {"crf": 32, "preset": "slow"},
-        360: {"crf": 32, "preset": "slow"},  # compensate lower resolution with better preset
-        576: {"crf": 28, "preset": "slow"},
+        240: {"crf": 32, "preset": "medium"},
+        360: {"crf": 32, "preset": "medium"},  # compensate lower resolution with better preset
+        576: {"crf": 28, "preset": "medium"},
         720: {"crf": 24, "preset": "fast"},
         1080: {"crf": 24, "preset": "fast"}
     }
