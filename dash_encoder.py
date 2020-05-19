@@ -18,7 +18,9 @@ import argparse
 import sys
 import math
 import os
+import glob
 import subprocess
+import shutil
 
 """
 based on:
@@ -28,6 +30,21 @@ based on:
     * https://rybakov.com/blog/mpeg-dash/
     * nice post about encoding: https://developers.google.com/media/vp9/settings/vod/
 """
+
+def get_local_executable(path, executable):
+    executable = list(glob.glob(os.path.join(path, executable)))
+    if len(executable) == 0:
+        return shutil.which(executable)  # use system's executable
+    assert len(executable) == 1
+    return executable[0]
+
+
+def ffmpeg():
+    return get_local_executable("ffmpeg-4*", "ffmpeg")
+
+
+def ffprobe():
+    return get_local_executable("ffmpeg-4*", "ffprobe")
 
 
 def shell_call(call):
@@ -44,7 +61,7 @@ def shell_call(call):
 
 
 def get_fps(video):
-    cmd = f"""./ffmpeg-4.2.2-amd64-static/ffprobe -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate {video}"""
+    cmd = f"""{ffprobe()} -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate {video}"""
     fps = shell_call(cmd).split("\n")[0]
     fps = fps.split("/")
     if len(fps) > 1:
@@ -66,9 +83,11 @@ def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
     #-tune film -x264opts 'keyint=25:min-keyint=25:no-scenecut'
     # -x264opts 'keyint=25:min-keyint=25:no-scenecut'
     encoding = {
-        360: {"crf": 32, "preset": "ultrafast"},
-        576: {"crf": 28, "preset": "ultrafast"},
+        240: {"crf": 32, "preset": "slow"},
+        360: {"crf": 32, "preset": "slow"},  # compensate lower resolution with better preset
+        576: {"crf": 28, "preset": "slow"},
         720: {"crf": 24, "preset": "fast"}
+        1080: {"crf": 24, "preset": "fast"}
     }
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_{height}p.mp4")
     fps = get_fps(video)
@@ -79,7 +98,7 @@ def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
         preset = encoding[height]["preset"]
 
     cmd = f"""
-        ./ffmpeg-4.2.2-amd64-static/ffmpeg -y -hide_banner
+        {ffmpeg()} -y -hide_banner
         -i "{video}"
         -preset {preset}
         -an -c:v libx264
@@ -97,7 +116,7 @@ def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
 def build_audio_encode_command(video, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_audio.m4a")
     cmd = f"""
-        ./ffmpeg-4.2.2-amd64-static/ffmpeg -y -hide_banner
+        {ffmpeg()} -y -hide_banner
         -i {video}
         -c:a aac
         -ac 2
@@ -121,7 +140,7 @@ def build_manifest_command(video, video_files, audio_files, dashdir, seg_duratio
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_manifest.mpd")
 
     cmd = f"""
-        ./ffmpeg-4.2.2-amd64-static/ffmpeg -y
+        {ffmpeg()} -y
         {manifest_part}
         -c copy
         {map_part}
@@ -138,7 +157,7 @@ def build_manifest_command(video, video_files, audio_files, dashdir, seg_duratio
 def build_thumbnail(video, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_thumb.png")
     cmd = f"""
-        ./ffmpeg-4.2.2-amd64-static/ffmpeg -y -hide_banner
+        {ffmpeg()} -y -hide_banner
         -i {video}
         -ss 00:00:02
         -vf "scale=-2:540"
