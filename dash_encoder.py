@@ -44,10 +44,13 @@ def shell_call(call):
 
 
 def get_fps(video):
-    cmd = f"""./ffmpeg-4.1.4-amd64-static/ffprobe -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate {video}"""
-    fps = shell_call(cmd).split("\n")[0].split("/")
-    fps = int(math.ceil(int(fps[0].strip()) / int(fps[1].strip())))
-    return fps
+    cmd = f"""./ffmpeg-4.2.2-amd64-static/ffprobe -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate {video}"""
+    fps = shell_call(cmd).split("\n")[0]
+    fps = fps.split("/")
+    if len(fps) > 1:
+        fps = int(math.ceil(int(fps[0].strip()) / int(fps[1].strip())))
+        return fps
+    return int(fps[0])
 
 
 def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
@@ -76,7 +79,7 @@ def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
         preset = encoding[height]["preset"]
 
     cmd = f"""
-        ./ffmpeg-4.1.4-amd64-static/ffmpeg -y -hide_banner
+        ./ffmpeg-4.2.2-amd64-static/ffmpeg -y -hide_banner
         -i "{video}"
         -preset {preset}
         -an -c:v libx264
@@ -94,7 +97,7 @@ def build_video_encode_command(video, dashdir, height=240, seg_duration=2):
 def build_audio_encode_command(video, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_audio.m4a")
     cmd = f"""
-        ./ffmpeg-4.1.4-amd64-static/ffmpeg -y -hide_banner
+        ./ffmpeg-4.2.2-amd64-static/ffmpeg -y -hide_banner
         -i {video}
         -c:a aac
         -ac 2
@@ -118,7 +121,7 @@ def build_manifest_command(video, video_files, audio_files, dashdir, seg_duratio
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_manifest.mpd")
 
     cmd = f"""
-        ./ffmpeg-4.1.4-amd64-static/ffmpeg -y
+        ./ffmpeg-4.2.2-amd64-static/ffmpeg -y
         {manifest_part}
         -c copy
         {map_part}
@@ -135,7 +138,7 @@ def build_manifest_command(video, video_files, audio_files, dashdir, seg_duratio
 def build_thumbnail(video, dashdir):
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_thumb.png")
     cmd = f"""
-        ./ffmpeg-4.1.4-amd64-static/ffmpeg -y -hide_banner
+        ./ffmpeg-4.2.2-amd64-static/ffmpeg -y -hide_banner
         -i {video}
         -ss 00:00:02
         -vf "scale=-2:540"
@@ -168,7 +171,7 @@ def main(_):
     print(f"store dashed video in {a['dash_folder']}")
 
     # TODO: filter out higher resolutions based on input video?!
-    resolutions = [360, 576, 720] #, 540, 720, 1080] #, 1440, 2160]  # TODO: extend, check, update
+    resolutions = [240, 360, 576, 720, 1080] #, 540, 720, 1080] #, 1440, 2160]  # TODO: extend, check, update
 
     seg_duration = 2
     # collect all commands and output files
