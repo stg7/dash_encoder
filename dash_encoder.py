@@ -134,7 +134,8 @@ def build_manifest_command(video, video_files, audio_files, dashdir, seg_duratio
     )
 
     map_part = " ".join(
-        [f"-map {i}" for i in range(len(video_files + audio_files))]
+        [f"-map {i}:v" for i in range(len(video_files))] +
+        [f"-map {i}:a" for i in range(len(video_files) + 1, len(video_files + audio_files))]
     )
 
     output = os.path.join(dashdir, os.path.splitext(os.path.basename(video))[0] + f"_manifest.mpd")
@@ -151,6 +152,7 @@ def build_manifest_command(video, video_files, audio_files, dashdir, seg_duratio
         {output}
         """
     cmd = " ".join(cmd.split())
+    print(cmd)
     return cmd, output
 
 
